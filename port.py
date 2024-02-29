@@ -24,9 +24,14 @@ def main():
     host = input("Digite o host para escanear (ex: google.com ou 142.250.189.206): ")
     comeco = int(input("Digite a porta inicial para escanear (ex: 10): " ))
     final = int(input("Digite a porta final para escanear (ex: 1000): "))
+    quantas = (input("Quantas threads deseja usar?  \n(default:50 -- cuidado, muitas threads pode resultar em resultados imprecisos): "))
+    if quantas.isdigit() == False:	
+        quantas = 50
+    else:
+        quantas = int(quantas)
     portas = range(comeco, final+1)
     portas_abertas = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=quantas) as executor:
         futures = {executor.submit(scan_port, port, host): port for port in portas}
         for future in concurrent.futures.as_completed(futures):
             port = futures[future]
